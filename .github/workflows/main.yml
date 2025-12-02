@@ -1,0 +1,32 @@
+name: C++ Compilation Check
+
+on:
+  push:
+    branches: [ main ]  # Adjust if your default branch is different
+  pull_request:
+    branches:
+      - main
+      - 'releases/**'
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile C++ code
+        run: |
+          echo "Finding all .cpp files..."
+          FILES=$(find . -name '*.cpp')
+          
+          if [ -z "$FILES" ]; then
+            echo "No .cpp files found. Exiting..."
+            exit 1
+          fi
+          
+          echo "Compiling C++ files..."
+          g++ -std=c++17 -Wall -Werror $FILES -o output
+          
+          echo "Compilation successful!"
